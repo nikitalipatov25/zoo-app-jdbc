@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 
 public class Main {
@@ -134,7 +135,7 @@ public class Main {
         String inputName = scanner.nextLine();
 
 //        Не работает!
-        animals.removeIf(p -> p.name.equals(inputName));
+        animals.removeIf(p -> p.getName().equals(inputName));
 
         saveAnimals(animals);
     }
@@ -154,13 +155,11 @@ public class Main {
         String name = scanner.nextLine();
         System.out.println("Введите класс животного");
         String animalClass = scanner.nextLine();
-        var list = animals.stream().filter(p -> !p.name.equals(name) && !p.getClass().getSimpleName().equals(animalClass)).toList();
-        var editAnimal = animals.stream().filter(p -> p.name.equals(name) && p.getClass().getSimpleName().equals(animalClass)).toList();
         System.out.println("Введите новое имя животного");
-        editAnimal.get(0).setName(scanner.nextLine());
-        animals.clear();
-        animals.addAll(list);
-        animals.addAll(editAnimal);
+        animals
+                .stream()
+                .filter(p -> p.name.equals(name) && p.getClass().getSimpleName().equals(animalClass))
+                .forEach(p -> p.setName(scanner.nextLine()));
         saveAnimals(animals);
     }
 
