@@ -1,0 +1,4 @@
+Penguins, Chicken, 2, false, black and white, Antarctica
+Tigers, Fido, 4, true, Orange with black stripes, Eurasia and Africa
+Kangaroos, Boxer, 2, false, Yellow, Australia
+Tigers, Doggy, 4, true, Orange with black stripes, Eurasia and Africa
