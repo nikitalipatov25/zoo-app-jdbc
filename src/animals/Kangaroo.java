@@ -9,9 +9,7 @@ public class Kangaroo extends Animals implements Serializable {
 
     @Override
     public String toString() {
-        return "Кенгуру по имени " + name + '\'' +
-                ", окрашен в " + color + '\'' +
-                ", проживает в " + area + '\'';
+        return Kangaroo.class.getSimpleName() + ", " + super.toString();
     }
 
     @Override

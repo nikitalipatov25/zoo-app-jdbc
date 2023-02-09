@@ -4,11 +4,10 @@ import java.io.Serializable;
 
 public class Tiger extends Animals implements Serializable {
 
+
     @Override
     public String toString() {
-        return "Тигр по имени " + name + '\'' +
-                ", окрашен в " + color + '\'' +
-                ", проживает в " + area + '\'';
+        return Tiger.class.getSimpleName() + ", " + super.toString();
     }
 
     public Tiger(String name, int legsNumber, boolean isPredator, String color, String area) {

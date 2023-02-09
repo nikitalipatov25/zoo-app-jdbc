@@ -9,9 +9,7 @@ public class Wolf extends Animals implements Serializable {
 
     @Override
     public String toString() {
-        return "Волк по имени " + name + '\'' +
-                ", окрашен в " + color + '\'' +
-                ", проживает в " + area + '\'';
+        return Wolf.class.getSimpleName() + ", " + super.toString();
     }
 
     @Override

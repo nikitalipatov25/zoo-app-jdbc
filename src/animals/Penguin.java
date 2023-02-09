@@ -9,9 +9,7 @@ public class Penguin extends Animals implements Serializable {
 
     @Override
     public String toString() {
-        return "Пингвин по имени " + name + '\'' +
-                ", окрашен в " + color + '\'' +
-                ", проживает в " + area + '\'';
+        return Penguin.class.getSimpleName() + ", " + super.toString();
     }
 
     @Override
