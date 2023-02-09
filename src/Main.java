@@ -12,7 +12,6 @@ public class Main {
 
         ArrayList<Animals> animals = new ArrayList<>();
         loadAnimals(animals);
-        String name;
 
         System.out.println("1 - Посмотреть всех животных " + "2 - Посмотреть конкретных животных"
                 + " 3 - Посмотреть животных по признакам"
@@ -48,57 +47,12 @@ public class Main {
         FileReader fr = new FileReader("animals.txt");
         Scanner scanner = new Scanner(fr);
         scanner.useDelimiter(", *");
-        ArrayList<String> stringsAnimals = new ArrayList<>();
+        ArrayList<String> animalsStr = new ArrayList<>();
         while (scanner.hasNext()) {
-            stringsAnimals.add(scanner.nextLine());
+            animalsStr.add(scanner.nextLine());
         }
 
-        String[] newAnimal;
-        for (int i = 0; i < stringsAnimals.size(); i++) {
-            newAnimal = stringsAnimals.get(i).split(", ");
-            switch (newAnimal[0]) {
-                case ("Tiger") :animals.add(new Tiger(
-                        newAnimal[1],
-                        Integer.parseInt(newAnimal[2]),
-                        Boolean.parseBoolean(newAnimal[3]),
-                        newAnimal[4],
-                        newAnimal[5]
-                ));
-                    break;
-                case ("Wolf") : animals.add(new Wolf(
-                        newAnimal[1],
-                        Integer.parseInt(newAnimal[2]),
-                        Boolean.parseBoolean(newAnimal[3]),
-                        newAnimal[4],
-                        newAnimal[5]
-                ));
-                    break;
-                case ("Penguin") : animals.add(new Penguin(
-                        newAnimal[1],
-                        Integer.parseInt(newAnimal[2]),
-                        Boolean.parseBoolean(newAnimal[3]),
-                        newAnimal[4],
-                        newAnimal[5]
-                ));
-                    break;
-                case ("Bear") : animals.add(new Bear(
-                        newAnimal[1],
-                        Integer.parseInt(newAnimal[2]),
-                        Boolean.parseBoolean(newAnimal[3]),
-                        newAnimal[4],
-                        newAnimal[5]
-                ));
-                    break;
-                case ("Kangaroo") : animals.add(new Kangaroo(
-                        newAnimal[1],
-                        Integer.parseInt(newAnimal[2]),
-                        Boolean.parseBoolean(newAnimal[3]),
-                        newAnimal[4],
-                        newAnimal[5]
-                ));
-                    break;
-            }
-        }
+        AnimalCreator.create(animalsStr, animals);
 
         fr.close();
         return animals;
@@ -179,23 +133,36 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         String inputName = scanner.nextLine();
 
-        Iterator<Animals> iterator = animals.iterator();
+//        Не работает!
+        animals.removeIf(p -> p.name.equals(inputName));
 
-        while (iterator.hasNext()) {
-            if (iterator.next().name.equals(inputName)) {
-                iterator.remove();
-            }
-        }
-
-        //animals.removeIf(p -> Objects.equals(p.name, inputName));
         saveAnimals(animals);
     }
 
-    public static void addAnimal(ArrayList<Animals> animals) {
+    public static void addAnimal(ArrayList<Animals> animals) throws IOException {
+        System.out.println("Добавьте животное");
+        Scanner scanner = new Scanner(System.in);
+        ArrayList<String> strAnimal = new ArrayList<>();
+        strAnimal.add(scanner.nextLine());
+        AnimalCreator.create(strAnimal, animals);
 
     }
 
-    public static void renameAnimal(ArrayList<Animals> animals) {
-
+    public static void renameAnimal(ArrayList<Animals> animals) throws IOException {
+        System.out.println("Введите имя животного");
+        Scanner scanner = new Scanner(System.in);
+        String name = scanner.nextLine();
+        System.out.println("Введите класс животного");
+        String animalClass = scanner.nextLine();
+        var list = animals.stream().filter(p -> !p.name.equals(name) && !p.getClass().getSimpleName().equals(animalClass)).toList();
+        var editAnimal = animals.stream().filter(p -> p.name.equals(name) && p.getClass().getSimpleName().equals(animalClass)).toList();
+        System.out.println("Введите новое имя животного");
+        editAnimal.get(0).setName(scanner.nextLine());
+        animals.clear();
+        animals.addAll(list);
+        animals.addAll(editAnimal);
+        saveAnimals(animals);
     }
+
+
 }
