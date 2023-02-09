@@ -2,16 +2,17 @@ package animals;
 
 import java.io.Serializable;
 
-public class Penguins extends Animals implements Serializable {
-    public Penguins(String name, int legsNumber, boolean isPredator, String color, String area) {
-        super(name, legsNumber, isPredator, color, area);
-    }
+public class Tiger extends Animals implements Serializable {
 
     @Override
     public String toString() {
-        return "Пингвин по имени " + name + '\'' +
+        return "Тигр по имени " + name + '\'' +
                 ", окрашен в " + color + '\'' +
                 ", проживает в " + area + '\'';
+    }
+
+    public Tiger(String name, int legsNumber, boolean isPredator, String color, String area) {
+        super(name, legsNumber, isPredator, color, area);
     }
 
     @Override

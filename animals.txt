@@ -1,4 +1,11 @@
-Penguins, Chicken, 2, false, black and white, Antarctica
-Tigers, Fido, 4, true, Orange with black stripes, Eurasia and Africa
-Kangaroos, Boxer, 2, false, Yellow, Australia
-Tigers, Doggy, 4, true, Orange with black stripes, Eurasia and Africa
+Волк по имени Bob', окрашен в gray', проживает в Eurasia'
+Тигр по имени Ivan', окрашен в yellow', проживает в Eurasia'
+Медведь по имени John', окрашен в black', проживает в North America'
+Кенгуру по имени Peter', окрашен в yellow', проживает в Australia'
+Волк по имени Arnold', окрашен в gray', проживает в Eurasia'
+Тигр по имени Petr', окрашен в white', проживает в Eurasia'
+Медведь по имени Rayan', окрашен в white', проживает в Antarctica'
+Кенгуру по имени Tom', окрашен в yellow', проживает в Australia'
+Волк по имени Trent', окрашен в white', проживает в North America'
+Тигр по имени Andy', окрашен в yellow', проживает в Eurasia'
+Медведь по имени Jordan', окрашен в gray', проживает в South America'
