@@ -19,11 +19,7 @@ public class Animals implements Serializable {
 
     @Override
     public String toString() {
-        return "Имя" + name + '\'' +
-                ", количество ног =" + legsNumber +
-                ", хищник? =" + isPredator +
-                ", цвет " + color + '\'' +
-                ", ареал обитания" + area + '\'';
+        return name + ", " + legsNumber + ", " + isPredator + ", " + color + ", " + area;
     }
 
     public String getName() {

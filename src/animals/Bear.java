@@ -9,7 +9,7 @@ public class Bear extends Animals implements Serializable {
 
     @Override
     public String toString() {
-        return Bear.class.getName() + ","
+        return Bear.class.getSimpleName() + ", " + super.toString();
     }
 
     @Override

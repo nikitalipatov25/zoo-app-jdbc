@@ -2,7 +2,10 @@ import animals.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Objects;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 
 public class Main {
@@ -10,43 +13,34 @@ public class Main {
 
         ArrayList<Animals> animals = new ArrayList<>();
         loadAnimals(animals);
-        String name;
 
-        System.out.println("1 - Посмотреть всех животных " + "2 - Посмотреть конкретных животных" + " 3 - Посмотреть животных по признакам"
-                + " 4 - Позвать животное" + " 5 - Убрать животное" + " 6 - Добавить животное" + " 7 - Изменить имя животному");
+        System.out.println("1 - Посмотреть всех животных " + "2 - Посмотреть конкретных животных"
+                + " 3 - Посмотреть животных по признакам"
+                + " 4 - Позвать животное" + " 5 - Убрать животное"
+                + " 6 - Добавить животное" + " 7 - Изменить имя животному");
         Scanner scanner = new Scanner(System.in);
         int num = scanner.nextInt();
 
         switch (num) {
-            case 1: System.out.println(animals);
-                break;
-            case 2: selectAnimals(animals);
-                break;
-            case 3: selectSign(animals);
-                break;
-            case 4: callAnimal(animals);
-                break;
-            case 5:
-                deleteAnimal(animals);
-                break;
-            case 6: addAnimal(animals);
-                break;
-            case 7:
-                System.out.println("Введите имя");
-                name = scanner.nextLine();
-                renameAnimal(animals, name);
-                break;
+            case 1 -> System.out.println(animals);
+            case 2 -> selectAnimals(animals);
+            case 3 -> selectSign(animals);
+            case 4 -> callAnimal(animals);
+            case 5 -> deleteAnimal(animals);
+            case 6 -> addAnimal(animals);
+            case 7 -> renameAnimal(animals);
         }
     }
 
     public static void saveAnimals(ArrayList<Animals> animals) throws IOException {
-        FileWriter fw = new FileWriter("animals.txt");
-        BufferedWriter bw = new BufferedWriter(fw);
-        for (Animals animal : animals) {
-            bw.write(animal.toString());
-            bw.newLine();
+        FileWriter fileWriter = new FileWriter("animals.txt");
+        for (int i = 0; i < animals.size(); i++){
+           fileWriter.write(animals.get(i).toString());
+           fileWriter.write(System.lineSeparator());
         }
-        bw.close();
+        fileWriter.flush();
+        fileWriter.close();
+
     }
 
     public static ArrayList<Animals> loadAnimals(ArrayList<Animals> animals) throws Exception {
@@ -54,57 +48,12 @@ public class Main {
         FileReader fr = new FileReader("animals.txt");
         Scanner scanner = new Scanner(fr);
         scanner.useDelimiter(", *");
-        ArrayList<String> stringsAnimals = new ArrayList<>();
+        ArrayList<String> animalsStr = new ArrayList<>();
         while (scanner.hasNext()) {
-            stringsAnimals.add(scanner.nextLine());
+            animalsStr.add(scanner.nextLine());
         }
 
-        String[] newAnimal;
-        for (int i = 0; i < stringsAnimals.size(); i++) {
-            newAnimal = stringsAnimals.get(i).split(", ");
-            switch (newAnimal[0]) {
-                case ("Tiger") :animals.add(new Tiger(
-                        newAnimal[1],
-                        Integer.parseInt(newAnimal[2]),
-                        Boolean.parseBoolean(newAnimal[3]),
-                        newAnimal[4],
-                        newAnimal[5]
-                ));
-                    break;
-                case ("Wolf") : animals.add(new Wolf(
-                        newAnimal[1],
-                        Integer.parseInt(newAnimal[2]),
-                        Boolean.parseBoolean(newAnimal[3]),
-                        newAnimal[4],
-                        newAnimal[5]
-                ));
-                    break;
-                case ("Penguin") : animals.add(new Penguin(
-                        newAnimal[1],
-                        Integer.parseInt(newAnimal[2]),
-                        Boolean.parseBoolean(newAnimal[3]),
-                        newAnimal[4],
-                        newAnimal[5]
-                ));
-                    break;
-                case ("Bear") : animals.add(new Bear(
-                        newAnimal[1],
-                        Integer.parseInt(newAnimal[2]),
-                        Boolean.parseBoolean(newAnimal[3]),
-                        newAnimal[4],
-                        newAnimal[5]
-                ));
-                    break;
-                case ("Kangaroo") : animals.add(new Kangaroo(
-                        newAnimal[1],
-                        Integer.parseInt(newAnimal[2]),
-                        Boolean.parseBoolean(newAnimal[3]),
-                        newAnimal[4],
-                        newAnimal[5]
-                ));
-                    break;
-            }
-        }
+        AnimalCreator.create(animalsStr, animals);
 
         fr.close();
         return animals;
@@ -183,16 +132,36 @@ public class Main {
     public static void deleteAnimal(ArrayList<Animals> animals) throws IOException {
         System.out.println("Введите имя");
         Scanner scanner = new Scanner(System.in);
-        String name = scanner.nextLine();
-        animals.removeIf(p -> p.name.equals(name));
+        String inputName = scanner.nextLine();
+
+//        Не работает!
+        animals.removeIf(p -> p.getName().equals(inputName));
+
         saveAnimals(animals);
     }
 
-    public static void addAnimal(ArrayList<Animals> animals) {
+    public static void addAnimal(ArrayList<Animals> animals) throws IOException {
+        System.out.println("Добавьте животное");
+        Scanner scanner = new Scanner(System.in);
+        ArrayList<String> strAnimal = new ArrayList<>();
+        strAnimal.add(scanner.nextLine());
+        AnimalCreator.create(strAnimal, animals);
 
     }
 
-    public static void renameAnimal(ArrayList<Animals> animals, String name) {
-
+    public static void renameAnimal(ArrayList<Animals> animals) throws IOException {
+        System.out.println("Введите имя животного");
+        Scanner scanner = new Scanner(System.in);
+        String name = scanner.nextLine();
+        System.out.println("Введите класс животного");
+        String animalClass = scanner.nextLine();
+        System.out.println("Введите новое имя животного");
+        animals
+                .stream()
+                .filter(p -> p.name.equals(name) && p.getClass().getSimpleName().equals(animalClass))
+                .forEach(p -> p.setName(scanner.nextLine()));
+        saveAnimals(animals);
     }
+
+
 }
