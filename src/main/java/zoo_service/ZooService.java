@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -89,7 +90,7 @@ public class ZooService {
         }
     }
 
-    public static ArrayList<Animals> animalsByType(ArrayList<Animals> animals, Class questionMark) {
+    public static String animalsByType(ArrayList<Animals> animals, Class questionMark) {
 
         ArrayList<Animals> result = new ArrayList<>();
 
@@ -98,16 +99,27 @@ public class ZooService {
                 result.add(animal);
             }
         }
-        return result;
+
+        if (result.isEmpty()) {
+            return "Животных данного типа в зоопарке нет";
+        } else return String.valueOf(result);
     }
 
-    public static List<Animals> callAnimal(ArrayList<Animals> animals) {
+    public static String callAnimal(ArrayList<Animals> animals) {
         System.out.println("Введите имя");
         Scanner scanner = new Scanner(System.in);
         String name = scanner.nextLine();
-        var result = animals.stream().filter(p -> p.name.equals(name)).toList();
-        //System.out.println(animals.stream().filter(p -> p.name.equals(name)).toList());
-        return result;
+        var result = Arrays.toString(animals
+                .stream()
+                .filter(p -> p.name.equals(name))
+                .toArray());
+
+        if (result.isEmpty()) {
+            return "Никто из животных не откликнулся";
+        } else return result;
+//        System.out.println(animals.stream().filter(p -> p.name.equals(name)).toList());
+//        System.out.println(Arrays.toString(result.toArray()));
+//        return Arrays.toString(result.toArray());
     }
 
     public static String deleteAnimal(ArrayList<Animals> animals) throws IOException {
@@ -146,12 +158,13 @@ public class ZooService {
         Scanner scanner = new Scanner(System.in);
         String name = scanner.nextLine();
         System.out.println("Введите новое имя животного");
+        String newName = scanner.nextLine();
         animals
                 .stream()
                 .filter(p -> p.name.equals(name))
-                .forEach(p -> p.setName(scanner.nextLine()));
+                .forEach(p -> p.setName(newName));
         saveAnimals(animals);
-        return "Теперь животное зовут " + animals.stream().filter(p -> p.getName().equals(name));
+        return "Теперь животное " + name + " зовут " + newName;
     }
 
     public static String equalAnimals(ArrayList<Animals> animals)  {

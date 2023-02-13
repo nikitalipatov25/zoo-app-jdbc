@@ -62,12 +62,13 @@ public class AnimalCreator {
                     ));
                 }
 
+                ZooService.saveAnimals(animals);
+
             } else {
                 System.out.println("Животное " + newAnimal[0] + " " + newAnimal[1] + " не было добавлено, поскольку не обадает уникальным именем");
             }
 
         }
-        ZooService.saveAnimals(animals);
         return animals;
     }
 

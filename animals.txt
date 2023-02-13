@@ -1,4 +1,4 @@
-Wolf, Bob, 4, true, gray, Eurasia
+Wolf, Bobus, 4, true, gray, Eurasia
 Tiger, Ivan, 4, true, yellow, Eurasia
 Bear, John, 4, true, black, North America
 Wolf, Arnold, 4, true, gray, Eurasia
@@ -9,4 +9,3 @@ Kangaroo, Tom, 2, false, yellow, Australia
 Wolf, Trent, 4, true, white, North America
 Tiger, Andy, 4, true, yellow, Eurasia
 Bear, Jordan, 4, true, gray, South America
-
