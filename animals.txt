@@ -1,4 +1,3 @@
-Wolf, Bobus, 4, true, gray, Eurasia
 Tiger, Ivan, 4, true, yellow, Eurasia
 Bear, John, 4, true, black, North America
 Wolf, Arnold, 4, true, gray, Eurasia

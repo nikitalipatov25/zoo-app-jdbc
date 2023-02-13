@@ -1,6 +1,6 @@
-package zoo_service;
+package service;
 
-import zoo_animals.*;
+import animals.*;
 
 import java.io.IOException;
 import java.util.ArrayList;

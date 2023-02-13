@@ -1,14 +1,26 @@
-import zoo_animals.*;
-import zoo_service.ZooService;
+import animals.*;
+import service.ZooDBService;
+import service.ZooService;
 
+import java.sql.*;
 import java.util.*;
+
+import static service.ZooDBService.truncateTable;
 
 
 public class Main {
     public static void main(String[] args) throws Exception {
 
-        ArrayList<Animals> animals = new ArrayList<>();
-        ZooService.loadAnimals(animals);
+        String dbUrl = "jdbc:postgresql://localhost/zoo";
+
+        truncateTable(dbUrl);
+        createTable(dbUrl);
+
+        ArrayList<NewAnimals> animals = new ArrayList<>();
+        animals.add(new NewAnimals("Bob", 4, "wolf", true, "gray", "Eurasia"));
+        animals.add(new NewAnimals("Ivan", 4, "tiger", true, "yellow", "Eurasia"));
+        animals.add(new NewAnimals("John", 4, "bear", true, "black", "North America"));
+        ZooDBService.loadAnimals(dbUrl, animals);
 
         System.out.println("1 - Посмотреть всех животных " + "2 - Посмотреть конкретных животных"
                 + " 3 - Посмотреть животных по признакам"
@@ -25,17 +37,38 @@ public class Main {
             int num = scanner.nextInt();
 
             switch (num) {
-                case 1 -> System.out.println(animals);
-                case 2 -> ZooService.selectAnimals(animals);
-                case 3 -> ZooService.selectSign(animals);
-                case 4 -> ZooService.callAnimal(animals);
-                case 5 -> ZooService.deleteAnimal(animals);
-                case 6 -> ZooService.addAnimal(animals);
-                case 7 -> ZooService.renameAnimal(animals);
-                case 8 -> ZooService.equalAnimals(animals);
+                case 1 -> ZooDBService.selectAnimals(dbUrl);
+                case 2 -> ZooDBService.animalsByType(dbUrl);
+                //case 3 -> ZooService.selectSign(animals);
+                case 4 -> ZooDBService.callAnimal(dbUrl);
+                case 5 -> ZooDBService.deleteAnimal(dbUrl);
+                case 6 -> ZooDBService.addAnimal(dbUrl);
+                case 7 -> ZooDBService.renameAnimal(dbUrl);
+                case 8 -> ZooDBService.assertAnimals(dbUrl);
                 case 0 -> isWorking = false;
                 default -> throw new IllegalStateException("Вы выбрали неверное действие: " );
             }
+        }
+    }
+
+    private static void createTable(String dbUrl) {
+
+        String query = "CREATE TABLE IF NOT EXISTS animals " +
+                "(ID SERIAL PRIMARY KEY," +
+                " NAME TEXT, " +
+                " LEGS INT, " +
+                " TYPE VARCHAR(50), " +
+                " ISPREDATOR BOOLEAN, " +
+                " COLOR VARCHAR(50), " +
+                " AREA VARCHAR(50))";
+
+        try (Connection connection = DriverManager.getConnection(dbUrl, "postgres", "root");
+             Statement statement = connection.createStatement()) {
+
+            statement.executeUpdate(query);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
