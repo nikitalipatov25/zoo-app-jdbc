@@ -1,9 +1,9 @@
+zoo_animals\Wolf.class
 Main.class
-animals\Wolf.class
-animals\Tiger.class
-service\AnimalCreator.class
-service\ZooService.class
-animals\Animals.class
-animals\Penguin.class
-animals\Kangaroo.class
-animals\Bear.class
+zoo_service\ZooService.class
+zoo_animals\Penguin.class
+zoo_service\AnimalCreator.class
+zoo_animals\Bear.class
+zoo_animals\Tiger.class
+zoo_animals\Animals.class
+zoo_animals\Kangaroo.class

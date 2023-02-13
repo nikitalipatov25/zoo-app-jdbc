@@ -1,10 +1,9 @@
-package service;
+package zoo_service;
 
-import animals.*;
+import zoo_animals.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class AnimalCreator {
 

@@ -1,16 +1,17 @@
-package service;
+package zoo_service;
 
-import animals.*;
+import zoo_animals.*;
 
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class ZooService {
-    public static void saveAnimals(ArrayList<Animals> animals) throws IOException {
+    public static void  saveAnimals(ArrayList<Animals> animals) throws IOException {
         FileWriter fileWriter = new FileWriter("animals.txt");
         for (Animals animal : animals) {
             fileWriter.write(animal.toString());
@@ -88,48 +89,59 @@ public class ZooService {
         }
     }
 
-    public static void animalsByType(ArrayList<Animals> animals, Class questionMark) {
+    public static ArrayList<Animals> animalsByType(ArrayList<Animals> animals, Class questionMark) {
+
+        ArrayList<Animals> result = new ArrayList<>();
+
         for (Animals animal : animals) {
             if (animal.getClass().equals(questionMark)) {
-                System.out.println(animal);
+                result.add(animal);
             }
         }
+        return result;
     }
 
-    public static void callAnimal(ArrayList<Animals> animals) {
+    public static List<Animals> callAnimal(ArrayList<Animals> animals) {
         System.out.println("Введите имя");
         Scanner scanner = new Scanner(System.in);
         String name = scanner.nextLine();
-        System.out.println(animals.stream().filter(p -> p.name.equals(name)).toList());
+        var result = animals.stream().filter(p -> p.name.equals(name)).toList();
+        //System.out.println(animals.stream().filter(p -> p.name.equals(name)).toList());
+        return result;
     }
 
-    public static void deleteAnimal(ArrayList<Animals> animals) throws IOException {
+    public static String deleteAnimal(ArrayList<Animals> animals) throws IOException {
         System.out.println("Введите имя");
         Scanner scanner = new Scanner(System.in);
         String inputName = scanner.nextLine();
-
+        String result = "";
         for (int i = 0; i < animals.size(); i++) {
             if (animals.get(i).getName().equals(inputName)) {
+                result = animals.get(i).getClass().getSimpleName();
                 animals.remove(i);
+                saveAnimals(animals);
             }
         }
 
-//        Не работает!
-//        animals.removeIf(p -> p.getName().equals(inputName));
+        if (result.equals("")) {
+            return "Такого животного нет";
+        } else {
+            saveAnimals(animals);
+            return "Животное " + result + " с имененем " + inputName + " было убрано с зоопарка";
+        }
 
-        saveAnimals(animals);
     }
 
-    public static void addAnimal(ArrayList<Animals> animals) throws IOException {
+    public static String addAnimal(ArrayList<Animals> animals) throws IOException {
         System.out.println("Добавьте животное");
         Scanner scanner = new Scanner(System.in);
         ArrayList<String> strAnimal = new ArrayList<>();
         strAnimal.add(scanner.nextLine());
         AnimalCreator.create(strAnimal, animals);
-        System.out.println("Животное добавлено");
+        return "Животное " + strAnimal + " добавлено";
     }
 
-    public static void renameAnimal(ArrayList<Animals> animals) throws IOException {
+    public static String renameAnimal(ArrayList<Animals> animals) throws IOException {
         System.out.println("Введите имя животного");
         Scanner scanner = new Scanner(System.in);
         String name = scanner.nextLine();
@@ -139,9 +151,10 @@ public class ZooService {
                 .filter(p -> p.name.equals(name))
                 .forEach(p -> p.setName(scanner.nextLine()));
         saveAnimals(animals);
+        return "Теперь животное зовут " + animals.stream().filter(p -> p.getName().equals(name));
     }
 
-    public static void equalAnimals(ArrayList<Animals> animals)  {
+    public static String equalAnimals(ArrayList<Animals> animals)  {
         System.out.println("Введите имя 1-го животного");
         Scanner scanner = new Scanner(System.in);
         String firstName = scanner.nextLine();
@@ -155,31 +168,37 @@ public class ZooService {
                 .stream()
                 .filter(p -> p.getName().equals(secondName)).toList();
 
-        String[] f = firstAnimal
+        String[] first = firstAnimal
                 .stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining())
                 .split(", ");
-        String[] s = secondAnimal
+        String[] second = secondAnimal
                 .stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining())
                 .split(", ");
 
+        ArrayList<String> plus = new ArrayList<>();
         System.out.println("Совпадающие признаки");
-        for (String value : f) {
-            for (String item : s) {
+        for (String value : first) {
+            for (String item : second) {
                 if (value.equals(item)) {
-                    System.out.println(value);
+                    plus.add(value);
                 }
             }
         }
 
+        ArrayList<String> minus = new ArrayList<>();
         System.out.println("Несовпадающие признаки");
-        for (int i = 0; i < f.length; i++) {
-                if (!f[i].equals(s[i])) {
-                    System.out.println(f[i] + " - " + s[i]);
+        for (int i = 0; i < first.length; i++) {
+                if (!first[i].equals(second[i])) {
+                    minus.add(first[i] + " - " + second[i]);
+                    //System.out.println(first[i] + " - " + second[i]);
                 }
             }
+
+        return "Совпадающие признаки - " + plus + " . Несовпадающие признаки - " + minus;
+
         }
 }

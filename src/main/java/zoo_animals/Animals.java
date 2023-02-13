@@ -1,4 +1,4 @@
-package animals;
+package zoo_animals;
 
 import java.io.Serializable;
 

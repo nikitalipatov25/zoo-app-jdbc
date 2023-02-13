@@ -1,15 +1,15 @@
-package animals;
+package zoo_animals;
 
 import java.io.Serializable;
 
-public class Penguin extends Animals implements Serializable {
-    public Penguin(String name, int legsNumber, boolean isPredator, String color, String area) {
+public class Wolf extends Animals implements Serializable {
+    public Wolf(String name, int legsNumber, boolean isPredator, String color, String area) {
         super(name, legsNumber, isPredator, color, area);
     }
 
     @Override
     public String toString() {
-        return Penguin.class.getSimpleName() + ", " + super.toString();
+        return Wolf.class.getSimpleName() + ", " + super.toString();
     }
 
     @Override

@@ -1,5 +1,5 @@
-import animals.*;
-import service.ZooService;
+import zoo_animals.*;
+import zoo_service.ZooService;
 
 import java.util.*;
 
