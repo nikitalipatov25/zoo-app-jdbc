@@ -1,12 +1,11 @@
 package service;
 
 import animals.Animals;
-import animals.NewAnimals;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class ZooDBService {
 
@@ -17,7 +16,28 @@ public class ZooDBService {
 //            + " 8 - Сравнить двух животных"
 //            + " 0 - Покинуть зоопарк");
 
-    public static String loadAnimals(String dbUrl, ArrayList<NewAnimals> animals) {
+    public static void createTable(String dbUrl) {
+
+        String query = "CREATE TABLE IF NOT EXISTS animals " +
+                "(ID SERIAL PRIMARY KEY," +
+                " NAME TEXT, " +
+                " LEGS INT, " +
+                " TYPE VARCHAR(50), " +
+                " ISPREDATOR BOOLEAN, " +
+                " COLOR VARCHAR(50), " +
+                " AREA VARCHAR(50))";
+
+        try (Connection connection = DriverManager.getConnection(dbUrl, "postgres", "root");
+             Statement statement = connection.createStatement()) {
+
+            statement.executeUpdate(query);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String loadAnimals(String dbUrl, ArrayList<Animals> animals) {
 
         String query = "INSERT INTO animals (name,legs,type,ispredator,color,area) VALUES (?,?,?,?,?,?)";
 
@@ -26,7 +46,7 @@ public class ZooDBService {
 
             connection.setAutoCommit(false);
 
-            for (NewAnimals animal : animals) {
+            for (Animals animal : animals) {
 
                 statement.setString(1, animal.getName());
                 statement.setInt(2, animal.getLegs());
@@ -58,7 +78,7 @@ public class ZooDBService {
             ArrayList<String> animals = new ArrayList<>();
 
             while (resultSet.next()) {
-                animals.add(resultSet.getString(2));
+                animals.add(resultSet.getString(4) + " " + resultSet.getString(2));
             }
             System.out.println(animals);
 
@@ -183,13 +203,13 @@ public class ZooDBService {
         System.out.println("Добавьте животное");
         Scanner scanner = new Scanner(System.in);
 
-        ArrayList<NewAnimals> animals = new ArrayList<>();
+        ArrayList<Animals> animals = new ArrayList<>();
 
         String animal = scanner.nextLine();
 
         String[] split = animal.split(", ");
 
-        animals.add(new NewAnimals(split[0], Integer.parseInt(split[1]), split[2], Boolean.parseBoolean(split[3]), split[4], split[5]));
+        animals.add(new Animals(split[0], Integer.parseInt(split[1]), split[2], Boolean.parseBoolean(split[3]), split[4], split[5]));
 
         loadAnimals(dbUrl, animals);
 
@@ -229,50 +249,124 @@ public class ZooDBService {
         System.out.println("Введите имя 1-го животного");
         Scanner scanner = new Scanner(System.in);
         String firstName = scanner.nextLine();
-
         System.out.println("Введите имя 2-го животного");
         String secondName = scanner.nextLine();
+        ResultSet resultSet = null;
+        ArrayList<String> animal1 = new ArrayList<>();
+        ArrayList<String> animal2 = new ArrayList<>();
+        ArrayList<String> plus = new ArrayList<>();
+        ArrayList<String> minus = new ArrayList<>();
 
-        String first = "SELECT * FROM animals WHERE name = ? ";
-        String second = "SELECT * FROM animals WHERE name = ? ";
+        String query = "SELECT * FROM animals WHERE name = ? ";
 
         try (Connection connection = DriverManager.getConnection(dbUrl, "postgres", "root");
-             PreparedStatement statement1 = connection.prepareStatement(first);
-             PreparedStatement statement2 = connection.prepareStatement(second)) {
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
-            statement1.setString(1, firstName);
-            statement2.setString(1, secondName);
+            statement.setString(1, firstName);
+            resultSet = statement.executeQuery();
 
-            ResultSet firstAnimal = statement1.executeQuery();
-            ResultSet secondAnimal = statement2.executeQuery();
-
-            ArrayList<String> plus = new ArrayList<>();
-            for (int i = 0; i <= firstAnimal.getMetaData().getColumnCount(); i++) {
-                for (int j = 0; j <= secondAnimal.getMetaData().getColumnCount(); j++) {
-                    if ((firstAnimal.getString(i)).toString().equals((secondAnimal.getString(j)).toString())) {
-                        plus.add((String) firstAnimal.getString(1));
-                    }
-                }
+            while (resultSet.next()) {
+                animal1.add(resultSet.getString(2) + ", " + Integer.parseInt(resultSet.getString(3)) + ", " + resultSet.getString(4)
+                        + ", " + Boolean.parseBoolean(resultSet.getString(5)) + ", " + resultSet.getString(6) + ", " + resultSet.getString(7));
+                System.out.println(animal1);
             }
-            System.out.println(plus);
 
+            statement.setString(1, secondName);
+            resultSet = statement.executeQuery();
 
-            ArrayList<String> minus = new ArrayList<>();
-//            System.out.println("Несовпадающие признаки");
-//            for (int i = 0; i < first.length; i++) {
-//                if (!first[i].equals(second[i])) {
-//                    minus.add(first[i] + " - " + second[i]);
-//                    //System.out.println(first[i] + " - " + second[i]);
-//                }
-//            }
+            while (resultSet.next()) {
+                animal2.add(resultSet.getString(2) + ", " + Integer.parseInt(resultSet.getString(3)) + ", " + resultSet.getString(4)
+                        + ", " + Boolean.parseBoolean(resultSet.getString(5)) + ", " + resultSet.getString(6) + ", " + resultSet.getString(7));
+                System.out.println(animal2);
+            }
 
-            return "Совпадающие признаки - " + plus + " . Несовпадающие признаки - " + minus;
+            String[] firstAnimal = animal1
+                .stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining())
+                .split(", ");
 
+            String[] secondAnimal = animal2
+                    .stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining())
+                    .split(", ");
+
+            for (int i = 0; i < firstAnimal.length; i++) {
+                    if (firstAnimal[i].equals(secondAnimal[i])) {
+                        plus.add(firstAnimal[i]);
+                    } else minus.add(firstAnimal[i] + " - " + secondAnimal[i]);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return null;
+        System.out.println("Совпадающие признаки - " + plus + " . Несовпадающие признаки - " + minus);
+        return "Совпадающие признаки - " + plus + " . Несовпадающие признаки - " + minus;
+    }
+
+    public static String selectSign(String dbUrl) {
+        System.out.println("1 - Количество ног " + "2 - Хищник? " + "3 - Цвет " + "4 - Ареал обитания ");
+
+        Scanner scanner = new Scanner(System.in);
+        int sign = scanner.nextInt();
+        Scanner param = new Scanner(System.in);
+        String query = "";
+        String result = "";
+        ResultSet resultSet = null;
+
+            try (Connection connection = DriverManager.getConnection(dbUrl, "postgres", "root")) {
+
+                switch (sign) {
+                    case 1 -> {
+                        System.out.println("Введите кол-во ног");
+                        query = "SELECT * FROM animals WHERE legs = ?";
+                        PreparedStatement statement = connection.prepareStatement(query);
+                        statement.setInt(1, param.nextInt());
+                        resultSet = statement.executeQuery();
+                    }
+                    case 2 -> {
+                        System.out.println("Хищник?");
+                        query = "SELECT * FROM animals WHERE ispredator = ?";
+                        PreparedStatement statement = connection.prepareStatement(query);
+                        statement.setBoolean(1, param.nextBoolean());
+                        resultSet = statement.executeQuery();
+                    }
+                    case 3 -> {
+                        System.out.println("Введите цвет");
+                        query = "SELECT * FROM animals WHERE color = ?";
+                        PreparedStatement statement = connection.prepareStatement(query);
+                        statement.setString(1, param.nextLine());
+                        resultSet = statement.executeQuery();
+                    }
+                    case 4 -> {
+                        System.out.println("Введите ареал обитания");
+                        query = "SELECT * FROM animals WHERE area = ?";
+                        PreparedStatement statement = connection.prepareStatement(query);
+                        statement.setString(1, param.nextLine());
+                        resultSet = statement.executeQuery();
+                    }
+                    default -> throw new IllegalStateException("Unexpected value: " + sign);
+                }
+
+                if (!resultSet.next()) {
+                    System.out.println("Таких животных нет");
+                    result = "Никто из животных не откликнулся";
+                } else {
+                    do {
+                        System.out.println(resultSet.getString("type") + " " + resultSet.getString("name") + " "
+                                + resultSet.getString("legs") + " " + resultSet.getString("ispredator") + " "
+                                + resultSet.getString("color") + " " + resultSet.getString("area"));
+                        result = resultSet.getString("type") + " " + resultSet.getString("name") + " "
+                                + resultSet.getString("legs") + " " + resultSet.getString("ispredator") + " "
+                                + resultSet.getString("color") + " " + resultSet.getString("area");
+                    } while (resultSet.next());
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            return result;
     }
 
 }

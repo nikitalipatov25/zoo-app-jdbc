@@ -1,25 +1,49 @@
 package animals;
 
-import java.io.Serializable;
+public class Animals {
 
-public class Animals implements Serializable {
-    public String name;
-    public int legsNumber;
-    public boolean isPredator;
-    public String color;
-    public String area;
+    private int id;
+    private String name;
+    private int legs;
+    private String type;
+    private boolean isPredator;
+    private String color;
+    private String area;
 
-    public Animals(String name, int legsNumber, boolean isPredator, String color, String area) {
+    public Animals(int id, String name, int legs, String type, boolean isPredator, String color, String area) {
+        this.id = id;
         this.name = name;
-        this.legsNumber = legsNumber;
+        this.legs = legs;
+        this.type = type;
         this.isPredator = isPredator;
         this.color = color;
         this.area = area;
     }
 
-    @Override
-    public String toString() {
-        return name + ", " + legsNumber + ", " + isPredator + ", " + color + ", " + area;
+    public Animals(String name, int legs, String type, boolean isPredator, String color, String area) {
+        this.name = name;
+        this.legs = legs;
+        this.type = type;
+        this.isPredator = isPredator;
+        this.color = color;
+        this.area = area;
+    }
+
+    public Animals(String name, String type, String color) {
+        this.name = name;
+        this.type = type;
+        this.color = color;
+    }
+
+    public Animals() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -30,12 +54,20 @@ public class Animals implements Serializable {
         this.name = name;
     }
 
-    public int getLegsNumber() {
-        return legsNumber;
+    public int getLegs() {
+        return legs;
     }
 
-    public void setLegsNumber(int legsNumber) {
-        this.legsNumber = legsNumber;
+    public void setLegs(int legs) {
+        this.legs = legs;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public boolean isPredator() {
