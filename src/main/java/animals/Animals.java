@@ -3,6 +3,7 @@ package animals;
 public class Animals {
 
     private int id;
+    private String a;
     private String name;
     private int legs;
     private String type;

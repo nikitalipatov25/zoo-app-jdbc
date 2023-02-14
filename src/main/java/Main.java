@@ -10,7 +10,7 @@ import static service.ZooDBService.truncateTable;
 public class Main {
     public static void main(String[] args) throws Exception {
 
-        String dbUrl = "jdbc:postgresql://localhost/zoo";
+        final String dbUrl = "jdbc:postgresql://localhost/zoo";
 
         truncateTable(dbUrl);
         createTable(dbUrl);
